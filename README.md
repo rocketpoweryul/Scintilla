@@ -62,4 +62,4 @@ KPIs:
 	- Number of trades
 	- Average loss
 	- Average win
-CAGR![image](https://github.com/rocketpoweryul/Scintilla/assets/5898307/8ae2a444-1e02-4b61-be8d-f27ada4ae7fb)
+        - CAGR
