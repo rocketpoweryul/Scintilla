@@ -5,23 +5,21 @@
 // By: Michael Angelo Mustillo
 // Amibroker 6.40.4 with Norgate data on Windows 11
 
-
 // Main algorithm overview
 // For now this is basic:
 //   1. Find all stocks whose key moving average (KMA, let's use the 20-day as a default) has increased by 25%
 //   2. Further filter all resulting stocks to see which ones did not breach the KMA at all, considering low-of-day
 
+// include library, reread every time
+#pragma nocache
+#include "C:\Users\admin\OneDrive\Michael\Documents\GitHub\Scintilla\Scintilla_FuncLib.afl"
+
 // Tunable parameters
-KMA_len = 20;	// chosen length of the key simple moving average
+KMA_len 		= 20;	// chosen length of the key simple moving average
+Desired_gain 	= 20;	// desired gain in percent
 
-// Creation of required timeseries for the analysis
-KMA = MA( C, KMA_len );		// Create the KMA that cannot be breached
+Detected_gain = Get_KMA_Trend_Gains(KMA_len);
 
-// Find 20-day breaches for a stock
-KMA_vio = L < KMA;
-
-
-
-
-
-x = 1;
+// For the exploration, filter on when detected gain is greater than the desired gain
+Desired_gain_detected = Detected_gain > Desired_gain;
+Filter = Desired_gain_detected;
