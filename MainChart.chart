@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+	<Sheet>
+		<Name>Sheet 1</Name>
+		<Pane>
+			<ChartID>1018</ChartID>
+			<PercentHeight>50</PercentHeight>
+			<Formula>_SECTION_BEGIN( "Price" );\r\nSetChartOptions( 0, chartShowArrows | chartShowDates );\r\n_N( Title = StrFormat( "{{NAME}} - {{INTERVAL}} {{DATE}} Open %g, Hi %g, Lo %g, Close %g (%.1f%%) {{VALUES}}", O, H, L, C, SelectedValue( ROC( C, 1 ) ) ) );\r\n\r\n//plot chart data\r\nthickness = Param( "Bar thickness", -20, -100, 10, 1 );\r\n\r\nrc = ROC( C, 1 );\r\ncolor = IIf( rc &gt;= 0, colorBlue, IIf( rc &lt; 0, colorRed, -1 ) );\r\n\r\nstyle = styleNoTitle | styleBar;\r\n\r\nPlotOHLC( O, H, L, C, "", color, style, Null, Null, 0, 0, thickness );\r\n\r\n\r\n_SECTION_END();\r\n</Formula>
+			<FilePath>Formulas\\Drag-drop\\Price 2.afl</FilePath>
+			<Flags>256</Flags>
+			<MoreFlags>11</MoreFlags>
+			<Min>45.8568</Min>
+			<Max>80.3066</Max>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 2</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 3</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 4</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 5</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 6</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 7</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+	<Sheet>
+		<Name>Sheet 8</Name>
+		<Pane>
+			<ChartID>0</ChartID>
+			<PercentHeight>50</PercentHeight>
+		</Pane>
+	</Sheet>
+</Window>

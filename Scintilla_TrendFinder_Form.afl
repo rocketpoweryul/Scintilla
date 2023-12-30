@@ -1,0 +1,27 @@
+// This is the Scintilla research analyis formula
+// This is intended to find trends that meet my personal criteria
+// The goal is to use the trends it finds historically to see if there are common low-risk entry points that can provide an edge
+// Date created: 2023-12-30
+// By: Michael Angelo Mustillo
+// Amibroker 6.40.4 with Norgate data on Windows 11
+
+
+// Main algorithm overview
+// For now this is basic:
+//   1. Find all stocks whose key moving average (KMA, let's use the 20-day as a default) has increased by 25%
+//   2. Further filter all resulting stocks to see which ones did not breach the KMA at all, considering low-of-day
+
+// Tunable parameters
+KMA_len = 20;	// chosen length of the key simple moving average
+
+// Creation of required timeseries for the analysis
+KMA = MA( C, KMA_len );		// Create the KMA that cannot be breached
+
+// Find 20-day breaches for a stock
+KMA_vio = L < KMA;
+
+
+
+
+
+x = 1;
