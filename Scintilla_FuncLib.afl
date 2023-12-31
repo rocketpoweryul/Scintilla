@@ -23,19 +23,19 @@ function Get_KMA_Trend_Gains(KMA_len)
 	
 	// other arrays
 	bi	= BarIndex();	// array that tells you the index of the bar from 0 to barcount -1
-	end_of_chart = bi == BarCount -1;	// array that tells you it is the end of the chart
+	end_of_chart = bi == BarCount -1 AND C > KMA;	// array that tells you it is the end of the chart
 	
 	// Find KMA_len period breaches for a stock
 	// returns an array where any time there is a breach, the array value is true
 	// also sets to zero for repeated violations
-	KMA_vio = L < KMA AND NOT Ref(L < KMA, -1);
+	KMA_vio = L < KMA;
 	
 	// calculates the gain in percent, since the last KMA violation
 	// if statement is needed to avoid resetting gain on the day of the violation, so need to look back to 2nd most recent occurrence
-	Possible_gain = IIf( KMA_vio, ( KMA / ValueWhen( KMA_vio, KMA, 2 ) - 1 ) * 100, ( KMA / ValueWhen( KMA_vio, KMA, 1 ) - 1 ) * 100 );
+	Possible_gain = IIf( KMA_vio, ( KMA / ValueWhen( KMA_vio, Ref(C,1), 2 ) - 1 ) * 100, ( KMA / ValueWhen( KMA_vio, Ref(C,1), 1 ) - 1 ) * 100 );
 
 	// check gain once there is a violation or end of chart
-	Detected_gain = IIf(( KMA_vio OR end_of_chart ), Possible_gain, 0);
+	Detected_gain = IIf(( KMA_vio AND NOT Ref( KMA_vio, -1 )) OR end_of_chart, Possible_gain, 0);
 	
 	return Detected_gain;
 }

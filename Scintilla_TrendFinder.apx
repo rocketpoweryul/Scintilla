@@ -4,7 +4,7 @@
 <FormatVersion>1</FormatVersion>
 <Symbol>META</Symbol>
 <FormulaPath>C:\\Users\\admin\\OneDrive\\Michael\\Documents\\GitHub\\Scintilla\\Scintilla_TrendFinder_Form.afl</FormulaPath>
-<FormulaContent>// This is the Scintilla research analyis formula\r\n// This is intended to find trends that meet my personal criteria\r\n// The goal is to use the trends it finds historically to see if there are common low-risk entry points that can provide an edge\r\n// Date created: 2023-12-30\r\n// By: Michael Angelo Mustillo\r\n// Amibroker 6.40.4 with Norgate data on Windows 11\r\n\r\n// Main algorithm overview\r\n// For now this is basic:\r\n//   1. Find all stocks whose key moving average (KMA, let's use the 20-day as a default) has increased by 25%\r\n//   2. Further filter all resulting stocks to see which ones did not breach the KMA at all, considering low-of-day\r\n\r\n// include library, reread every time\r\n#pragma nocache\r\n#include "C:\\Users\\admin\\OneDrive\\Michael\\Documents\\GitHub\\Scintilla\\Scintilla_FuncLib.afl"\r\n\r\n// Tunable parameters\r\nKMA_len \t\t= 20;\t// chosen length of the key simple moving average\r\nDesired_gain \t= 20;\t// desired gain in percent\r\n\r\nDetected_gain = Get_KMA_Trend_Gains(KMA_len);\r\n\r\n// For the exploration, filter on when detected gain is greater than the desired gain\r\nDesired_gain_detected = Detected_gain &gt; Desired_gain;\r\nFilter = Desired_gain_detected;\r\n</FormulaContent>
+<FormulaContent>// This is the Scintilla research analyis formula\r\n// This is intended to find trends that meet my personal criteria\r\n// The goal is to use the trends it finds historically to see if there are common low-risk entry points that can provide an edge\r\n// Date created: 2023-12-30\r\n// By: Michael Angelo Mustillo\r\n// Amibroker 6.40.4 with Norgate data on Windows 11\r\n\r\n// Main algorithm overview\r\n// For now this is basic:\r\n//   1. Find all stocks whose key moving average (KMA, let's use the 20-day as a default) has increased by 25%\r\n//   2. Further filter all resulting stocks to see which ones did not breach the KMA at all, considering low-of-day\r\n\r\n// include library, reread every time\r\n#pragma nocache\r\n#include "C:\\Users\\admin\\OneDrive\\Michael\\Documents\\GitHub\\Scintilla\\Scintilla_FuncLib.afl"\r\n\r\n// Tunable parameters\r\nKMA_len \t\t= 20;\t// chosen length of the key simple moving average\r\nDesired_gain \t= 20;\t// desired gain in percent\r\n\r\n// Constants\r\nYear_in_days \t= 252;\r\n\r\n// required timeseries\r\nSMA200 = MA( C, 200 );\r\nSMA150 = MA( C, 150 );\r\nSMA050 = MA( C,  50 );\r\nSMA020 = MA( C,  20 );\r\nSMA010 = MA( C,  10 );\r\nSMA005 = MA( C,   5 );\r\n\r\n// get the detected gains above a certain kma\r\nDetected_gain\t\t\t= Get_KMA_Trend_Gains(KMA_len);\r\n\r\n// For the exploration, filter on when detected gain is greater than the desired gain\r\nDesired_gain_detected = Detected_gain &gt; Desired_gain;\r\nFilter = Desired_gain_detected;\r\n\r\n// columns for exploration and data processing\r\n// gains\r\nAddColumn( Detected_gain, "Gain %", 1.1 );\r\n\r\n// slow SMAs against at beginning of run\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, C &gt; SMA200 ),  "Above 200SMA", 1.0 );\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, C &gt; SMA150 ),  "Above 150SMA", 1.0 );\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, C &gt; SMA050 ),  "Above  50SMA", 1.0 );\r\n\r\n// fast SMAs against beginning of tun\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, C &gt; SMA020 ),  "Above 20SMA", 1.0 );\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, C &gt; SMA010 ),  "Above 10SMA", 1.0 );\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, C &gt; SMA005 ),  "Above  5SMA", 1.0 );\r\n\r\n// SMAs against each other\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, SMA150 &gt; SMA200 ), "SMA150&gt;200", 1.0 );\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, SMA050 &gt; SMA150 ), "SMA050&gt;150", 1.0 );\r\nAddColumn( ValueWhen( Ref( Detected_gain, -1) != 0, SMA020 &gt; SMA050 ), "SMA020&gt;150", 1.0 );\r\n\r\n// closeness to highs\r\nAddColumn(( 1 - C / HHV( C, Year_in_days     )) * 100,\t"%&lt;52wkHigh",\t1.0 );\r\nAddColumn(( 1 - C / HHV( C, Year_in_days * 2 )) * 100,\t"%&lt;104wkHigh", \t1.0 );\r\nAddColumn(( 1 - C / Highest( C )              ) * 100,\t"%&lt;ATH",  \t\t1.0 );\r\n</FormulaContent>
 <ApplyTo>2</ApplyTo>
 <RangeType>3</RangeType>
 <RangeAmount>1</RangeAmount>
@@ -28,10 +28,10 @@
 <Category3>0</Category3>
 <Type4>0</Type4>
 <Category4>0</Category4>
-<Type5>5</Type5>
-<Category5>-1</Category5>
-<Type6>6</Type6>
-<Category6>-1</Category6>
+<Type5>0</Type5>
+<Category5>0</Category5>
+<Type6>0</Type6>
+<Category6>0</Category6>
 </IncludeFilter>
 <ExcludeFilter>
 <ExcludeMode>1</ExcludeMode>
@@ -93,7 +93,7 @@
 <RangeLength>0</RangeLength>
 <RangeFromDate>2023-01-01 00:00:00</RangeFromDate>
 <RangeToDate>2023-12-31</RangeToDate>
-<ApplyTo>1</ApplyTo>
+<ApplyTo>2</ApplyTo>
 <FilterQty>2</FilterQty>
 <IncludeFilter>
 <ExcludeMode>0</ExcludeMode>
@@ -110,10 +110,10 @@
 <Category3>0</Category3>
 <Type4>0</Type4>
 <Category4>0</Category4>
-<Type5>5</Type5>
-<Category5>-1</Category5>
-<Type6>6</Type6>
-<Category6>-1</Category6>
+<Type5>0</Type5>
+<Category5>0</Category5>
+<Type6>0</Type6>
+<Category6>0</Category6>
 </IncludeFilter>
 <ExcludeFilter>
 <ExcludeMode>1</ExcludeMode>
@@ -189,7 +189,7 @@
 <MaxLongPos>0</MaxLongPos>
 <MaxShortPos>0</MaxShortPos>
 <SeparateLongShortRank>0</SeparateLongShortRank>
-<TotalSymbolQty>2</TotalSymbolQty>
+<TotalSymbolQty>8102</TotalSymbolQty>
 <EnableUserReportCharts>1</EnableUserReportCharts>
 <ChartWidth>500</ChartWidth>
 <ChartHeight>300</ChartHeight>

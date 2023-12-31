@@ -18,8 +18,46 @@
 KMA_len 		= 20;	// chosen length of the key simple moving average
 Desired_gain 	= 20;	// desired gain in percent
 
-Detected_gain = Get_KMA_Trend_Gains(KMA_len);
+// Constants
+Year_in_days 	= 252;
+
+// required timeseries
+SMA200 = MA( C, 200 );
+SMA150 = MA( C, 150 );
+SMA050 = MA( C,  50 );
+SMA020 = MA( C,  20 );
+SMA010 = MA( C,  10 );
+SMA005 = MA( C,   5 );
+
+// get the detected gains above a certain kma
+Detected_gain			= Get_KMA_Trend_Gains(KMA_len);
 
 // For the exploration, filter on when detected gain is greater than the desired gain
 Desired_gain_detected = Detected_gain > Desired_gain;
 Filter = Desired_gain_detected;
+
+// columns for exploration and data processing
+// gains
+AddColumn( Detected_gain, "Gain %", 1.1 );
+
+detected_start = Ref( Detected_gain, -1) != 0;
+
+// slow SMAs against at beginning of run
+AddColumn( ValueWhen( detected_start, C > SMA200 ),  "Above 200SMA", 1.0 );
+AddColumn( ValueWhen( detected_start, C > SMA150 ),  "Above 150SMA", 1.0 );
+AddColumn( ValueWhen( detected_start, C > SMA050 ),  "Above  50SMA", 1.0 );
+
+// fast SMAs against beginning of tun
+AddColumn( ValueWhen( detected_start, C > SMA020 ),  "Above 20SMA", 1.0 );
+AddColumn( ValueWhen( detected_start, C > SMA010 ),  "Above 10SMA", 1.0 );
+AddColumn( ValueWhen( detected_start, C > SMA005 ),  "Above  5SMA", 1.0 );
+
+// SMAs against each other
+AddColumn( ValueWhen( detected_start, SMA150 > SMA200 ), "SMA150>200", 1.0 );
+AddColumn( ValueWhen( detected_start, SMA050 > SMA150 ), "SMA050>150", 1.0 );
+AddColumn( ValueWhen( detected_start, SMA020 > SMA050 ), "SMA020>150", 1.0 );
+
+// closeness to highs
+AddColumn( ValueWhen( detected_start, ( 1 - C / HHV( C, Year_in_days     )) * 100 ),	"%<52wkHigh",	1.0 );
+AddColumn( ValueWhen( detected_start, ( 1 - C / HHV( C, Year_in_days * 2 )) * 100 ),	"%<104wkHigh", 	1.0 );
+AddColumn( ValueWhen( detected_start, ( 1 - C / Highest( C )              ) * 100 ),	"%<ATH",  		1.0 );
